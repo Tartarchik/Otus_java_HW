@@ -1,1 +1,1 @@
-# Otus_java_hw
+# 2024-10-otus-java-khayrullin-renat
