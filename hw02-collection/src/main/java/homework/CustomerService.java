@@ -4,7 +4,7 @@ import java.util.*;
 
 public class CustomerService {
 
-    TreeMap<Customer, String> mapCustomer = new TreeMap<>(Comparator.comparingLong(Customer::getScores));
+    private NavigableMap<Customer, String> mapCustomer = new TreeMap<>(Comparator.comparingLong(Customer::getScores));
 
     public Map.Entry<Customer, String> getSmallest() {
         return copyCustomerEntry(mapCustomer.firstEntry());
@@ -18,7 +18,7 @@ public class CustomerService {
         mapCustomer.put(customer, data);
     }
 
-    public Map.Entry<Customer, String> copyCustomerEntry(Map.Entry<Customer, String> customerEntry) {
+    private Map.Entry<Customer, String> copyCustomerEntry(Map.Entry<Customer, String> customerEntry) {
         if (customerEntry != null) {
             Customer customerMap = customerEntry.getKey();
             Customer customer = new Customer(customerMap.getId(), customerMap.getName(),
