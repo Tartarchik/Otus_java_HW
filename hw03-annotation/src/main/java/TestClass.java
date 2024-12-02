@@ -10,10 +10,12 @@ public class TestClass {
     @Before
     void setUpTest() {
         logger.info("Before");
+        throw new RuntimeException("fail test");
     }
 
     @Test
     void test1() {
+        throw new RuntimeException("fail test");
     }
 
     @Test

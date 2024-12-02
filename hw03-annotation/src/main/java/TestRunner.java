@@ -23,17 +23,22 @@ public class TestRunner {
         for (Method method : methods) {
             if (method.isAnnotationPresent(Test.class)) {
                 Object instance = createInstance(testClass);
-                invokeMetnods(beforeMethods, instance);
-                if (invokeTest(method, instance)) {
-                    success += 1;
-                }else {
+                if (invokeMethods(beforeMethods, instance)) {
+                    if (invokeTest(method, instance)) {
+                        success += 1;
+                    } else {
+                        failed += 1;
+                    }
+                    invokeMethods(afterMethods, instance);
+                    countTest = failed + success;
+                } else {
+                    invokeMethods(afterMethods, instance);
                     failed += 1;
+                    countTest = failed + success;
                 }
-                invokeMetnods(afterMethods, instance);
-                countTest = failed + success;
             }
         }
-        logger.info("Tests count: {} \nTest success: {} \nTest failed: {}",countTest, success, failed);
+        logger.info("Tests count: {} \nTest success: {} \nTest failed: {}", countTest, success, failed);
     }
 
     private List<Method> searchAnnotationMethod(Class<? extends Annotation> annotation, Class<?> testClass) {
@@ -46,14 +51,16 @@ public class TestRunner {
         return methods;
     }
 
-    private void invokeMetnods(List<Method> methodsList, Object instance) {
+    private boolean invokeMethods(List<Method> methodsList, Object instance) {
         for (Method method : methodsList) {
             try {
                 method.invoke(instance);
             } catch (Exception e) {
                 logger.info("failed: {}", method.getName());
+                return false;
             }
         }
+        return true;
     }
 
     private boolean invokeTest(Method testMethod, Object testInstance) {
@@ -71,7 +78,7 @@ public class TestRunner {
         try {
             return testClass.getConstructor().newInstance();
         } catch (Exception e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 }
