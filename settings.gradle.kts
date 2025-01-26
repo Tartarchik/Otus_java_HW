@@ -7,6 +7,8 @@ include("hw03-annotation")
 
 include("hw04-gc:homework")
 
+include("hw08-io")
+
 
 pluginManagement {
     val jgitver: String by settings
@@ -29,3 +31,4 @@ pluginManagement {
         id("com.diffplug.spotless") version spotless
     }
 }
+include("hw08-io")
