@@ -5,7 +5,6 @@ import ru.otus.core.repository.DataTemplateException;
 import ru.otus.core.repository.executor.DbExecutor;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -84,18 +83,17 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
     }
 
     private T createInstance(ResultSet rs) {
-        List<Object> entityValues = new ArrayList<>();
-        for (Field field : entityClassMetaData.getAllFields()) {
-            try {
-                entityValues.add(rs.getObject(field.getName()));
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+        try {if (rs.next()) {
+                T instance = entityClassMetaData.getConstructor().newInstance();
+                for (Field field : entityClassMetaData.getAllFields()) {
+                    field.setAccessible(true);
+                    field.set(instance, rs.getObject(field.getName()));
+                }
+                return instance;
             }
-        }
-        try {
-            return entityClassMetaData.getConstructor().newInstance(entityValues.toArray());
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new DataTemplateException(e);
+            return null;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
     }
 
