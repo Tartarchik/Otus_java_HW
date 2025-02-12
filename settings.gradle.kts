@@ -10,6 +10,7 @@ include("hw04-gc:homework")
 include("hw08-io")
 
 include("hw09-jdbc")
+include("hw10-jpql")
 
 
 pluginManagement {
